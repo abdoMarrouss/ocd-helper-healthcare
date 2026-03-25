@@ -1,0 +1,112 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/erp"></ion-back-button>
+    </ion-buttons>
+    <ion-title [dir]="lang.dir">{{ lang.t('sessionTitle') }}</ion-title>
+    <ion-note slot="end" class="ion-padding-end text-white font-mono text-lg">{{ elapsedFormatted }}</ion-note>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [dir]="lang.dir" class="ion-padding">
+  <div class="p-4">
+    <div class="ocd-card mb-4" style="background: #EFF6FF" *ngIf="situation">
+      <p class="text-xs text-blue-500 mb-1">{{ lang.t('situation') }}</p>
+      <p class="text-sm font-medium text-gray-800">{{ situation }}</p>
+    </div>
+
+    <!-- BASELINE -->
+    <div *ngIf="phase === 'baseline'">
+      <div class="ocd-card mb-6">
+        <p class="text-sm font-medium text-gray-700 mb-3">{{ lang.t('baselineSuds') }}</p>
+        <div class="text-center mb-3">
+          <span class="text-4xl font-bold" [style.color]="sudsColor(sudsBaseline)">{{ sudsBaseline }}</span>
+          <span class="text-gray-400 text-sm"> / 100</span>
+        </div>
+        <ion-range [(ngModel)]="sudsBaseline" min="0" max="100" color="primary" [pin]="true"></ion-range>
+        <div class="flex justify-between text-xs text-gray-400 mt-1">
+          <span>{{ lang.t('noAnxiety') }}</span><span>{{ lang.t('extremeAnxiety') }}</span>
+        </div>
+      </div>
+      <div class="ocd-card mb-4" style="background: #F0FDF4">
+        <p class="text-sm leading-relaxed text-gray-700">{{ lang.t('exposureInfo') }}</p>
+      </div>
+      <ion-button expand="block" color="primary" (click)="startSession()">
+        <ion-icon name="play-outline" slot="start"></ion-icon>
+        {{ lang.t('startExposure') }}
+      </ion-button>
+    </div>
+
+    <!-- ACTIVE -->
+    <div *ngIf="phase === 'active'">
+      <div class="ocd-card mb-4 text-center">
+        <p class="text-xs text-gray-500 mb-2">{{ lang.t('currentAnxiety') }}</p>
+        <span class="text-6xl font-bold" [style.color]="sudsColor(sudsCurrent)">{{ sudsCurrent }}</span>
+        <ion-range [(ngModel)]="sudsCurrent" min="0" max="100" color="primary" [pin]="true" class="mt-2"></ion-range>
+      </div>
+      <div class="ocd-card mb-4">
+        <p class="text-xs text-gray-500 mb-2">{{ lang.t('habituationCurve') }}</p>
+        <div class="flex items-end gap-1 h-16">
+          <div *ngFor="let point of sudsHistory" class="flex-1 rounded-t" [style.height.%]="point.value" [style.background]="sudsColor(point.value)" style="min-height:4px"></div>
+        </div>
+      </div>
+      <div class="grid grid-cols-2 gap-3 mb-4">
+        <div class="ocd-card text-center">
+          <p class="text-xs text-gray-400">{{ lang.t('peak') }}</p>
+          <p class="text-xl font-bold" [style.color]="sudsColor(sudsPeak)">{{ sudsPeak }}</p>
+        </div>
+        <div class="ocd-card text-center">
+          <p class="text-xs text-gray-400">{{ lang.t('time') }}</p>
+          <p class="text-xl font-bold text-primary font-mono">{{ elapsedFormatted }}</p>
+        </div>
+      </div>
+      <ion-button expand="block" color="secondary" (click)="endSession()">
+        <ion-icon name="stop-circle-outline" slot="start"></ion-icon>
+        {{ lang.t('endExposure') }}
+      </ion-button>
+    </div>
+
+    <!-- DONE -->
+    <div *ngIf="phase === 'done'">
+      <div class="ocd-card mb-4 text-center" style="background: #F0FDF4">
+        <ion-icon name="checkmark-circle" style="font-size:48px;color:#6BAE8E"></ion-icon>
+        <p class="text-lg font-bold text-gray-800 mt-2">{{ lang.t('wellDone') }}</p>
+      </div>
+      <div class="grid grid-cols-3 gap-3 mb-4">
+        <div class="ocd-card text-center">
+          <p class="text-xs text-gray-400">{{ lang.t('before') }}</p>
+          <p class="text-xl font-bold" [style.color]="sudsColor(sudsBaseline)">{{ sudsBaseline }}</p>
+        </div>
+        <div class="ocd-card text-center">
+          <p class="text-xs text-gray-400">{{ lang.t('peak') }}</p>
+          <p class="text-xl font-bold" [style.color]="sudsColor(sudsPeak)">{{ sudsPeak }}</p>
+        </div>
+        <div class="ocd-card text-center">
+          <p class="text-xs text-gray-400">{{ lang.t('after') }}</p>
+          <p class="text-xl font-bold" [style.color]="sudsColor(sudsEnd)">{{ sudsEnd }}</p>
+        </div>
+      </div>
+      <div class="ocd-card mb-4">
+        <p class="text-sm font-medium text-gray-700 mb-2">{{ lang.t('resistedCompulsion') }}</p>
+        <div class="flex gap-3">
+          <button class="flex-1 py-2 rounded-xl text-sm font-medium"
+            [style.background]="compulsionResisted ? '#D1FAE5' : '#F3F4F6'"
+            [style.color]="compulsionResisted ? '#065F46' : '#6B7280'"
+            (click)="compulsionResisted = true">{{ lang.t('yes') }}</button>
+          <button class="flex-1 py-2 rounded-xl text-sm font-medium"
+            [style.background]="!compulsionResisted ? '#FEE2E2' : '#F3F4F6'"
+            [style.color]="!compulsionResisted ? '#991B1B' : '#6B7280'"
+            (click)="compulsionResisted = false">{{ lang.t('no') }}</button>
+        </div>
+      </div>
+      <div class="ocd-card mb-4">
+        <p class="text-sm font-medium text-gray-700 mb-2">{{ lang.t('sessionNotes') }}</p>
+        <ion-textarea [(ngModel)]="notes" [placeholder]="lang.t('sessionNotesPlaceholder')" rows="3" fill="outline"></ion-textarea>
+      </div>
+      <ion-button expand="block" color="primary" (click)="saveSession()">
+        <ion-icon name="save-outline" slot="start"></ion-icon>
+        {{ lang.t('saveSession') }}
+      </ion-button>
+    </div>
+  </div>
+</ion-content>

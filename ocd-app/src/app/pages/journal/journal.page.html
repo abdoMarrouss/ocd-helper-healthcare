@@ -1,0 +1,43 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title [dir]="lang.dir">{{ lang.t('journalTitle') }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="addRecord()">
+        <ion-icon name="add-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [dir]="lang.dir" class="ion-padding">
+  <div class="p-4">
+
+    <div *ngIf="records.length === 0" class="text-center py-12">
+      <ion-icon name="journal-outline" style="font-size: 56px; color: #D1D5DB"></ion-icon>
+      <p class="text-gray-400 mt-3 text-sm">{{ lang.t('noRecords') }}</p>
+      <p class="text-gray-300 text-xs mt-1">{{ lang.t('addRecordHint') }}</p>
+    </div>
+
+    <div *ngFor="let r of records" class="ocd-card mb-3">
+      <div class="flex items-start justify-between mb-2">
+        <p class="text-sm text-gray-800 flex-1">{{ r.intrusiveThought }}</p>
+        <span class="text-lg font-bold mr-2" [style.color]="anxietyColor(r.anxietyLevel)">{{ r.anxietyLevel }}</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="text-xs px-2 py-0.5 rounded-full"
+          [style.background]="r.resisted ? '#D1FAE5' : '#FEE2E2'"
+          [style.color]="r.resisted ? '#065F46' : '#991B1B'">
+          {{ r.resisted ? lang.t('resistedLabel') : lang.t('didCompulsion') }}
+        </span>
+        <span class="text-xs text-gray-400">{{ r.recordedAt | date:'dd/MM HH:mm' }}</span>
+      </div>
+      <p *ngIf="r.compulsionPerformed" class="text-xs text-gray-400 mt-1">
+        {{ lang.t('compulsionLabel') }}: {{ r.compulsionPerformed }}
+      </p>
+    </div>
+
+    <div class="mt-4 px-3 py-2 rounded-xl" style="background: #F8F7F4">
+      <p class="text-xs text-center" style="color: #9CA3AF">{{ lang.t('journalRef') }}</p>
+    </div>
+  </div>
+</ion-content>

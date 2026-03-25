@@ -1,0 +1,130 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title [dir]="lang.dir">{{ lang.t('home') }}</ion-title>
+    <ion-buttons slot="end">
+      <div class="flex gap-2 ion-padding-end">
+        <button (click)="lang.setLanguage('ar')" class="text-xl rounded-lg px-1"
+          [style.opacity]="lang.current === 'ar' ? '1' : '0.4'">🇸🇦</button>
+        <button (click)="lang.setLanguage('fr')" class="text-xl rounded-lg px-1"
+          [style.opacity]="lang.current === 'fr' ? '1' : '0.4'">🇫🇷</button>
+        <button (click)="lang.setLanguage('en')" class="text-xl rounded-lg px-1"
+          [style.opacity]="lang.current === 'en' ? '1' : '0.4'">🇬🇧</button>
+        <button (click)="lang.setLanguage('es')" class="text-xl rounded-lg px-1"
+          [style.opacity]="lang.current === 'es' ? '1' : '0.4'">🇪🇸</button>
+      </div>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [dir]="lang.dir" class="ion-padding">
+  <ion-refresher slot="fixed" (ionRefresh)="loadData($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <div class="p-4">
+
+    <!-- Welcome -->
+    <div class="ocd-card mb-4">
+      <h2 class="text-lg font-bold text-gray-800 mb-1">{{ lang.t('welcome') }}{{ userName ? ' ' + userName : '' }} 👋</h2>
+      <p class="text-sm" style="color: #8A8A8A">{{ lang.t('welcomeSub') }}</p>
+    </div>
+
+    <!-- Progress Stats -->
+    <h3 class="text-base font-semibold text-gray-700 mb-3">{{ lang.t('myProgress') }}</h3>
+    <div class="grid grid-cols-3 gap-3 mb-5">
+
+      <!-- Last Y-BOCS score -->
+      <div class="ocd-card text-center p-3">
+        <ion-icon name="clipboard-outline" style="font-size: 20px; color: #4F7CAC" class="mb-1"></ion-icon>
+        <p class="text-xs text-gray-400 mb-1">{{ lang.t('lastScore') }}</p>
+        <ng-container *ngIf="lastAssessment; else noScore">
+          <p class="text-2xl font-bold" [style.color]="severityColor(lastAssessment.severity)">
+            {{ lastAssessment.totalScore }}
+          </p>
+          <p class="text-xs mt-1" [style.color]="severityColor(lastAssessment.severity)">
+            {{ severityLabel(lastAssessment.severity) }}
+          </p>
+        </ng-container>
+        <ng-template #noScore>
+          <p class="text-xs text-gray-400 mt-2">{{ lang.t('noDataYet') }}</p>
+        </ng-template>
+      </div>
+
+      <!-- ERP sessions this week -->
+      <div class="ocd-card text-center p-3">
+        <ion-icon name="trending-up-outline" style="font-size: 20px; color: #6BAE8E" class="mb-1"></ion-icon>
+        <p class="text-xs text-gray-400 mb-1">{{ lang.t('sessionsWeek') }}</p>
+        <ng-container *ngIf="erpStats; else noSessions">
+          <p class="text-2xl font-bold text-primary">{{ erpStats.totalSessions }}</p>
+        </ng-container>
+        <ng-template #noSessions>
+          <p class="text-xs text-gray-400 mt-2">{{ lang.t('noDataYet') }}</p>
+        </ng-template>
+      </div>
+
+      <!-- Resistance rate -->
+      <div class="ocd-card text-center p-3">
+        <ion-icon name="shield-checkmark-outline" style="font-size: 20px; color: #6BAE8E" class="mb-1"></ion-icon>
+        <p class="text-xs text-gray-400 mb-1">{{ lang.t('resistanceRate') }}</p>
+        <ng-container *ngIf="erpStats && erpStats.totalSessions > 0; else noRate">
+          <p class="text-2xl font-bold" style="color: #6BAE8E">{{ erpStats.resistanceRate | number:'1.0-0' }}%</p>
+        </ng-container>
+        <ng-template #noRate>
+          <p class="text-xs text-gray-400 mt-2">{{ lang.t('noDataYet') }}</p>
+        </ng-template>
+      </div>
+
+    </div>
+
+    <!-- Y-BOCS Progress Chart -->
+    <div *ngIf="hasChartData" class="ocd-card mb-5">
+      <h3 class="text-sm font-semibold text-gray-700 mb-1">{{ lang.t('progressChart') }}</h3>
+      <p class="text-xs text-gray-400 mb-3">{{ lang.t('progressChartSub') }}</p>
+      <apx-chart
+        [series]="chartOptions!.series!"
+        [chart]="chartOptions!.chart!"
+        [xaxis]="chartOptions!.xaxis!"
+        [yaxis]="chartOptions!.yaxis!"
+        [stroke]="chartOptions!.stroke!"
+        [tooltip]="chartOptions!.tooltip!"
+        [markers]="chartOptions!.markers!"
+        [annotations]="chartOptions!.annotations!"
+        [colors]="chartOptions!.colors!">
+      </apx-chart>
+      <div class="flex justify-center gap-4 mt-2">
+        <span class="flex items-center gap-1 text-xs text-gray-400"><span class="w-2 h-2 rounded-sm inline-block" style="background:#6BAE8E"></span>0–6</span>
+        <span class="flex items-center gap-1 text-xs text-gray-400"><span class="w-2 h-2 rounded-sm inline-block" style="background:#EAB308"></span>7–15</span>
+        <span class="flex items-center gap-1 text-xs text-gray-400"><span class="w-2 h-2 rounded-sm inline-block" style="background:#F97316"></span>16–23</span>
+        <span class="flex items-center gap-1 text-xs text-gray-400"><span class="w-2 h-2 rounded-sm inline-block" style="background:#EF4444"></span>24+</span>
+      </div>
+    </div>
+
+    <!-- Quick actions -->
+    <h3 class="text-base font-semibold text-gray-700 mb-3">{{ lang.t('startHere') }}</h3>
+    <div class="grid grid-cols-2 gap-3 mb-4">
+      <a routerLink="/tabs/assess" class="ocd-card text-center block">
+        <ion-icon name="clipboard-outline" style="font-size: 32px; color: #4F7CAC"></ion-icon>
+        <p class="text-sm font-medium mt-2">{{ lang.t('ybocs') }}</p>
+      </a>
+      <a routerLink="/tabs/erp" class="ocd-card text-center block">
+        <ion-icon name="trending-up-outline" style="font-size: 32px; color: #6BAE8E"></ion-icon>
+        <p class="text-sm font-medium mt-2">{{ lang.t('erpSession') }}</p>
+      </a>
+      <a routerLink="/tabs/journal" class="ocd-card text-center block">
+        <ion-icon name="journal-outline" style="font-size: 32px; color: #4F7CAC"></ion-icon>
+        <p class="text-sm font-medium mt-2">{{ lang.t('thoughtJournal') }}</p>
+      </a>
+      <a routerLink="/tabs/learn" class="ocd-card text-center block">
+        <ion-icon name="book-outline" style="font-size: 32px; color: #6BAE8E"></ion-icon>
+        <p class="text-sm font-medium mt-2">{{ lang.t('learnMore') }}</p>
+      </a>
+    </div>
+
+    <!-- Disclaimer -->
+    <div class="px-4 py-3 rounded-xl" style="background: #EFF6FF">
+      <p class="text-xs text-center leading-relaxed" style="color: #6B7280">
+        {{ lang.t('disclaimer') }}
+      </p>
+    </div>
+
+  </div>
+</ion-content>

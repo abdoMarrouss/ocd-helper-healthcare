@@ -1,0 +1,104 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title [dir]="lang.dir">{{ lang.t('settings') }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [dir]="lang.dir">
+  <ion-list>
+
+    <!-- Language Section -->
+    <ion-list-header>
+      <ion-label>{{ lang.t('language') }}</ion-label>
+    </ion-list-header>
+
+    <ion-item button (click)="changeLanguage('ar')" [detail]="false">
+      <span slot="start" style="font-size: 24px; margin-inline-end: 12px;">🇸🇦</span>
+      <ion-label>العربية</ion-label>
+      <ion-icon *ngIf="currentLang === 'ar'" name="checkmark" slot="end" color="primary"></ion-icon>
+    </ion-item>
+    <ion-item button (click)="changeLanguage('fr')" [detail]="false">
+      <span slot="start" style="font-size: 24px; margin-inline-end: 12px;">🇫🇷</span>
+      <ion-label>Français</ion-label>
+      <ion-icon *ngIf="currentLang === 'fr'" name="checkmark" slot="end" color="primary"></ion-icon>
+    </ion-item>
+    <ion-item button (click)="changeLanguage('en')" [detail]="false">
+      <span slot="start" style="font-size: 24px; margin-inline-end: 12px;">🇬🇧</span>
+      <ion-label>English</ion-label>
+      <ion-icon *ngIf="currentLang === 'en'" name="checkmark" slot="end" color="primary"></ion-icon>
+    </ion-item>
+    <ion-item button (click)="changeLanguage('es')" [detail]="false">
+      <span slot="start" style="font-size: 24px; margin-inline-end: 12px;">🇪🇸</span>
+      <ion-label>Español</ion-label>
+      <ion-icon *ngIf="currentLang === 'es'" name="checkmark" slot="end" color="primary"></ion-icon>
+    </ion-item>
+
+    <!-- Profile Section -->
+    <ion-list-header>
+      <ion-label>{{ lang.t('profile') }}</ion-label>
+    </ion-list-header>
+
+    <ion-item button (click)="showChangePwd = !showChangePwd" [detail]="false">
+      <ion-icon name="lock-closed-outline" slot="start" color="primary"></ion-icon>
+      <ion-label>{{ lang.t('changePwd') }}</ion-label>
+      <ion-icon [name]="showChangePwd ? 'chevron-up-outline' : 'chevron-down-outline'" slot="end" color="medium"></ion-icon>
+    </ion-item>
+
+    <div *ngIf="showChangePwd" class="ion-padding" style="background: #F8F7F4">
+      <div class="mb-3">
+        <label class="block text-xs font-medium text-gray-600 mb-1">{{ lang.t('currentPwd') }}</label>
+        <ion-input type="password" [(ngModel)]="currentPwd" fill="outline" dir="ltr" placeholder="••••••"></ion-input>
+      </div>
+      <div class="mb-3">
+        <label class="block text-xs font-medium text-gray-600 mb-1">{{ lang.t('newPwd') }}</label>
+        <ion-input type="password" [(ngModel)]="newPwd" fill="outline" dir="ltr" placeholder="••••••"></ion-input>
+      </div>
+      <div class="mb-3">
+        <label class="block text-xs font-medium text-gray-600 mb-1">{{ lang.t('confirmPwd') }}</label>
+        <ion-input type="password" [(ngModel)]="confirmPwd" fill="outline" dir="ltr" placeholder="••••••"></ion-input>
+      </div>
+      <ion-button expand="block" color="primary" (click)="savePassword()" [disabled]="savingPwd">
+        <ion-spinner *ngIf="savingPwd" name="crescent"></ion-spinner>
+        <span *ngIf="!savingPwd">{{ lang.t('savePwd') }}</span>
+      </ion-button>
+    </div>
+
+    <!-- Export Section -->
+    <ion-list-header>
+      <ion-label>{{ lang.t('exportData') }}</ion-label>
+    </ion-list-header>
+
+    <ion-item button (click)="exportCSV()" [detail]="false">
+      <ion-icon name="download-outline" slot="start" color="secondary"></ion-icon>
+      <ion-label>{{ lang.t('exportCSV') }}</ion-label>
+      <ion-note slot="end">CSV</ion-note>
+    </ion-item>
+
+    <!-- About Section -->
+    <ion-list-header>
+      <ion-label>{{ lang.t('aboutApp') }}</ion-label>
+    </ion-list-header>
+
+    <ion-item>
+      <ion-icon name="shield-checkmark-outline" slot="start" color="secondary"></ion-icon>
+      <ion-label class="ion-text-wrap">
+        <p style="font-size: 12px; color: #6B7280; line-height: 1.6">{{ lang.t('disclaimer') }}</p>
+        <p style="font-size: 11px; color: #9CA3AF; margin-top: 4px">ERP: Foa & Kozak 1986 · Y-BOCS: Goodman et al. 1989</p>
+      </ion-label>
+    </ion-item>
+
+    <ion-item>
+      <ion-icon name="information-circle-outline" slot="start" color="primary"></ion-icon>
+      <ion-label>{{ lang.t('version') }} 1.0.0</ion-label>
+    </ion-item>
+
+    <!-- Logout -->
+    <div class="ion-padding">
+      <ion-button expand="block" color="danger" fill="outline" (click)="confirmLogout()">
+        <ion-icon name="log-out-outline" slot="start"></ion-icon>
+        {{ lang.t('logout') }}
+      </ion-button>
+    </div>
+
+  </ion-list>
+</ion-content>

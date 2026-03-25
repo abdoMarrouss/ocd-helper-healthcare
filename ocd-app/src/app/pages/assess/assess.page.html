@@ -1,0 +1,106 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title [dir]="lang.dir">{{ lang.t('ybocsTitle') }}</ion-title>
+  </ion-toolbar>
+  <ion-toolbar>
+    <ion-segment [(ngModel)]="activeView" [dir]="lang.dir">
+      <ion-segment-button value="form">{{ lang.t('ybocsFormTab') }}</ion-segment-button>
+      <ion-segment-button value="history">{{ lang.t('ybocsHistoryTab') }}</ion-segment-button>
+    </ion-segment>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [dir]="lang.dir" class="ion-padding">
+
+  <!-- RESULT VIEW -->
+  <div *ngIf="submitted && lastResult" class="p-4">
+    <div class="ocd-card text-center mb-4">
+      <div class="text-5xl font-bold mb-2" [style.color]="severityColor(lastResult.severity)">
+        {{ lastResult.totalScore }}
+      </div>
+      <div class="text-lg font-semibold mb-1" [style.color]="severityColor(lastResult.severity)">
+        {{ severityLabel(lastResult.severity) }}
+      </div>
+      <p class="text-sm text-gray-500">{{ lang.t('totalOf40') }}</p>
+    </div>
+
+    <div class="grid grid-cols-2 gap-3 mb-4">
+      <div class="ocd-card text-center">
+        <p class="text-xs text-gray-500 mb-1">{{ lang.t('obsessionScore') }}</p>
+        <p class="text-2xl font-bold text-primary">{{ lastResult.obsessionScore }}</p>
+        <p class="text-xs text-gray-400">{{ lang.t('of20') }}</p>
+      </div>
+      <div class="ocd-card text-center">
+        <p class="text-xs text-gray-500 mb-1">{{ lang.t('compulsionScore') }}</p>
+        <p class="text-2xl font-bold text-secondary">{{ lastResult.compulsionScore }}</p>
+        <p class="text-xs text-gray-400">{{ lang.t('of20') }}</p>
+      </div>
+    </div>
+
+    <div class="px-4 py-3 rounded-xl mb-4" style="background: #FEF3C7">
+      <p class="text-xs text-center" style="color: #92400E">
+        {{ lang.t('selfMonitorNote') }}
+      </p>
+    </div>
+
+    <ion-button expand="block" fill="outline" color="primary" (click)="reset()">
+      {{ lang.t('newAssessment') }}
+    </ion-button>
+  </div>
+
+  <!-- FORM VIEW -->
+  <div *ngIf="!submitted && activeView === 'form'" class="p-4">
+    <div class="ocd-card mb-4" style="background: #EFF6FF">
+      <p class="text-sm text-center" style="color: #1E40AF">
+        {{ lang.t('ybocsRef') }}
+      </p>
+    </div>
+
+    <div class="mb-4" *ngFor="let q of questions; let i = index">
+      <div class="ocd-card">
+        <p class="text-xs font-medium mb-1" style="color: #4F7CAC">
+          {{ i < 5 ? lang.t('obsessionQ') : lang.t('compulsionQ') }} · {{ lang.t('question') }} {{ i + 1 }}
+        </p>
+        <p class="text-sm text-gray-800 mb-3">{{ q[lang.current] }}</p>
+        <div class="flex gap-2 justify-between">
+          <button
+            *ngFor="let label of answerLabels; let j = index"
+            (click)="answers[i] = j"
+            class="flex-1 py-2 rounded-lg text-xs font-medium transition-all"
+            [style.background]="answers[i] === j ? '#4F7CAC' : '#F3F4F6'"
+            [style.color]="answers[i] === j ? 'white' : '#374151'">
+            {{ j }}<br><span class="text-xs opacity-75">{{ label }}</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="mb-4 text-center text-sm text-gray-500">
+      {{ answeredCount }} / 10 {{ lang.t('answeredOf10') }}
+    </div>
+
+    <ion-button expand="block" [disabled]="!allAnswered || loading" (click)="submit()" color="primary">
+      <ion-spinner *ngIf="loading" name="crescent"></ion-spinner>
+      <span *ngIf="!loading">{{ lang.t('submitAssess') }}</span>
+    </ion-button>
+  </div>
+
+  <!-- HISTORY VIEW -->
+  <div *ngIf="activeView === 'history'" class="p-4">
+    <div *ngIf="history.length === 0" class="text-center py-10">
+      <ion-icon name="bar-chart-outline" style="font-size: 48px; color: #D1D5DB"></ion-icon>
+      <p class="text-gray-400 mt-2">{{ lang.t('noHistory') }}</p>
+    </div>
+    <div *ngFor="let h of history" class="ocd-card flex items-center justify-between">
+      <div>
+        <p class="text-sm text-gray-500">{{ h.takenAt | date:'dd/MM/yyyy' }}</p>
+        <p class="text-xs text-gray-400 mt-1">{{ lang.t('obsessionScore') }}: {{ h.obsessionScore }} | {{ lang.t('compulsionScore') }}: {{ h.compulsionScore }}</p>
+      </div>
+      <div class="text-right">
+        <span class="text-2xl font-bold" [style.color]="severityColor(h.severity)">{{ h.totalScore }}</span>
+        <p class="text-xs mt-1" [style.color]="severityColor(h.severity)">{{ severityLabel(h.severity) }}</p>
+      </div>
+    </div>
+  </div>
+
+</ion-content>

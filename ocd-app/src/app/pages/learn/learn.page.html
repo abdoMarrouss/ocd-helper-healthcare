@@ -1,0 +1,87 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title [dir]="lang.dir">{{ lang.t('learnTitle') }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [dir]="lang.dir" class="ion-padding">
+  <div class="p-4">
+
+    <div class="ocd-card mb-4" style="background: #EFF6FF">
+      <p class="text-sm font-medium" style="color: #1E40AF">{{ lang.t('learnBadge') }}</p>
+      <p class="text-xs mt-1" style="color: #3B82F6">DSM-5 · IOCDF · NICE Guidelines NG116</p>
+    </div>
+
+    <ion-accordion-group>
+
+      <!-- What is OCD -->
+      <ion-accordion value="ocd">
+        <ion-item slot="header" color="light">
+          <ion-icon name="information-circle-outline" slot="start" color="primary"></ion-icon>
+          <ion-label>{{ lang.t('whatIsOcd') }}</ion-label>
+        </ion-item>
+        <div slot="content" class="p-4 text-sm text-gray-700 leading-relaxed">
+          <p class="mb-3">{{ lang.t('learnOcdBody') }}</p>
+          <p class="text-xs mt-3" style="color: #9CA3AF">Source: DSM-5, APA 2013</p>
+        </div>
+      </ion-accordion>
+
+      <!-- ERP treatment -->
+      <ion-accordion value="erp">
+        <ion-item slot="header" color="light">
+          <ion-icon name="trending-up-outline" slot="start" color="secondary"></ion-icon>
+          <ion-label>{{ lang.t('whatIsErp') }}</ion-label>
+        </ion-item>
+        <div slot="content" class="p-4 text-sm text-gray-700 leading-relaxed">
+          <p class="mb-3">{{ lang.t('learnErpBody') }}</p>
+          <p class="text-xs mt-3" style="color: #9CA3AF">Source: Foa & Kozak 1986 · NICE Guidelines NG116</p>
+        </div>
+      </ion-accordion>
+
+      <!-- Types -->
+      <ion-accordion value="types">
+        <ion-item slot="header" color="light">
+          <ion-icon name="layers-outline" slot="start" color="primary"></ion-icon>
+          <ion-label>{{ lang.t('ocdTypes') }}</ion-label>
+        </ion-item>
+        <div slot="content" class="p-4 text-sm text-gray-700 leading-relaxed">
+          <div class="mb-2 p-2 rounded-lg" style="background: #F0FDF4">
+            <strong>{{ lang.t('learnType1') }}</strong> — {{ lang.t('learnType1Sub') }}
+          </div>
+          <div class="mb-2 p-2 rounded-lg" style="background: #FFF7ED">
+            <strong>{{ lang.t('learnType2') }}</strong> — {{ lang.t('learnType2Sub') }}
+          </div>
+          <div class="mb-2 p-2 rounded-lg" style="background: #EFF6FF">
+            <strong>{{ lang.t('learnType3') }}</strong> — {{ lang.t('learnType3Sub') }}
+          </div>
+          <div class="mb-2 p-2 rounded-lg" style="background: #FDF4FF">
+            <strong>{{ lang.t('learnType4') }}</strong> — {{ lang.t('learnType4Sub') }}
+          </div>
+          <div class="p-2 rounded-lg" style="background: #FFF1F2">
+            <strong>{{ lang.t('learnType5') }}</strong> — {{ lang.t('learnType5Sub') }}
+          </div>
+          <p class="text-xs mt-3" style="color: #9CA3AF">Source: IOCDF Clinical Guidelines</p>
+        </div>
+      </ion-accordion>
+
+      <!-- Myths -->
+      <ion-accordion value="myths">
+        <ion-item slot="header" color="light">
+          <ion-icon name="bulb-outline" slot="start" color="warning"></ion-icon>
+          <ion-label>{{ lang.t('ocdMyths') }}</ion-label>
+        </ion-item>
+        <div slot="content" class="p-4 text-sm text-gray-700 leading-relaxed">
+          <p class="mb-3 font-medium text-red-500">❌ {{ lang.t('learnMythWrong') }}</p>
+          <p class="mb-2">{{ lang.t('learnMyth1') }}</p>
+          <p class="mb-2">{{ lang.t('learnMyth2') }}</p>
+          <p class="mb-4">{{ lang.t('learnMyth3') }}</p>
+          <p class="mb-3 font-medium text-green-600">✓ {{ lang.t('learnMythRight') }}</p>
+          <p class="mb-2">{{ lang.t('learnFact1') }}</p>
+          <p>{{ lang.t('learnFact2') }}</p>
+        </div>
+      </ion-accordion>
+
+    </ion-accordion-group>
+
+  </div>
+</ion-content>

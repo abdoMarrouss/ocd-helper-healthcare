@@ -1,0 +1,7 @@
+{
+  "name": "ocd-app",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

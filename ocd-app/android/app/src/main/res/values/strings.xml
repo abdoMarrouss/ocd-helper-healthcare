@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">OCD Helper</string>
+    <string name="title_activity_main">OCD Helper</string>
+    <string name="package_name">com.ocdhelper.app</string>
+    <string name="custom_url_scheme">com.ocdhelper.app</string>
+</resources>

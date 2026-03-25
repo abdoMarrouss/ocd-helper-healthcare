@@ -1,0 +1,70 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title [dir]="lang.dir">{{ lang.t('fearLadder') }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="addItem()">
+        <ion-icon name="add-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [dir]="lang.dir" class="ion-padding">
+  <div class="p-4">
+
+    <!-- Info card -->
+    <div class="ocd-card mb-4" style="background: #F0FDF4">
+      <p class="text-sm font-medium text-gray-700 mb-1">{{ lang.t('howLadderWorks') }}</p>
+      <p class="text-xs text-gray-500 leading-relaxed">{{ lang.t('ladderDesc') }}</p>
+    </div>
+
+    <!-- Empty state -->
+    <div *ngIf="items.length === 0" class="text-center py-12">
+      <ion-icon name="list-outline" style="font-size: 56px; color: #D1D5DB"></ion-icon>
+      <p class="text-gray-400 mt-3 text-sm">{{ lang.t('noFears') }}</p>
+      <p class="text-gray-300 text-xs mt-1">{{ lang.t('addFearHint') }}</p>
+    </div>
+
+    <!-- Ladder items sorted by SUDS -->
+    <div *ngFor="let item of items" class="ocd-card mb-3">
+      <div class="flex items-center justify-between">
+        <div class="flex-1 ml-3">
+          <p class="text-sm font-medium text-gray-800" [class.line-through]="item.completed" [class.opacity-50]="item.completed">
+            {{ item.situation }}
+          </p>
+          <div class="flex items-center gap-2 mt-1">
+            <span class="text-xs font-bold px-2 py-0.5 rounded-full text-white" [style.background]="sudsColor(item.sudsRating)">
+              SUDS {{ item.sudsRating }}
+            </span>
+            <span *ngIf="item.completed" class="text-xs text-secondary">✓ {{ lang.t('completed') }}</span>
+          </div>
+        </div>
+
+        <!-- SUDS bar -->
+        <div class="w-2 rounded-full ml-2" style="height: 48px; background: #F3F4F6">
+          <div class="w-full rounded-full" [style.height.%]="item.sudsRating" [style.background]="sudsColor(item.sudsRating)" style="transition: height 0.3s; margin-top: auto"></div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex gap-2 mt-3">
+        <ion-button size="small" fill="outline" color="primary" (click)="startSession(item)" class="flex-1">
+          <ion-icon name="play-outline" slot="start"></ion-icon>
+          {{ lang.t('startSession') }}
+        </ion-button>
+        <ion-button size="small" fill="outline" [color]="item.completed ? 'medium' : 'success'" (click)="markCompleted(item)">
+          <ion-icon [name]="item.completed ? 'refresh-outline' : 'checkmark-outline'"></ion-icon>
+        </ion-button>
+        <ion-button size="small" fill="outline" color="danger" (click)="deleteItem(item)">
+          <ion-icon name="trash-outline"></ion-icon>
+        </ion-button>
+      </div>
+    </div>
+
+    <!-- ERP source note -->
+    <div class="mt-4 px-3 py-2 rounded-xl" style="background: #F8F7F4">
+      <p class="text-xs text-center" style="color: #9CA3AF">{{ lang.t('erpRef') }}</p>
+    </div>
+
+  </div>
+</ion-content>

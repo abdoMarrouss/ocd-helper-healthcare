@@ -1,0 +1,47 @@
+# ========================
+# API (ocd-api)
+# ========================
+ocd-api/.env
+ocd-api/.env.local
+ocd-api/.env.production
+ocd-api/node_modules/
+ocd-api/dist/
+ocd-api/*.log
+ocd-api/*.zip
+
+# ========================
+# App (ocd-app)
+# ========================
+ocd-app/node_modules/
+ocd-app/www/
+ocd-app/dist/
+ocd-app/.angular/
+ocd-app/.ionic/
+ocd-app/*.log
+
+# Android signing - NEVER commit
+ocd-app/android/keystore.properties
+ocd-app/android/*.keystore
+ocd-app/android/*.jks
+
+# Android generated / large files
+ocd-app/android/.gradle/
+ocd-app/android/build/
+ocd-app/android/app/build/
+ocd-app/android/app/src/main/assets/public/
+ocd-app/android/capacitor-cordova-android-plugins/
+ocd-app/android/.idea/
+ocd-app/android/app/src/main/assets/capacitor.config.json
+ocd-app/android/app/src/main/assets/capacitor.plugins.json
+ocd-app/android/app/src/main/res/xml/config.xml
+
+# ========================
+# Common
+# ========================
+.DS_Store
+Thumbs.db
+*.sw[mnpcod]
+
+# Claude Code / IDE internals
+.claude/
+ocd_keystore/

@@ -1,0 +1,132 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title [dir]="lang.dir">{{ lang.t('grounding') }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [dir]="lang.dir" class="ion-padding">
+  <div class="p-4">
+    <ion-accordion-group>
+
+      <!-- 4-7-8 Breathing -->
+      <ion-accordion value="breathing">
+        <ion-item slot="header" color="light">
+          <ion-icon name="fitness-outline" slot="start" color="secondary"></ion-icon>
+          <ion-label>{{ lang.t('breathing') }}</ion-label>
+        </ion-item>
+        <div slot="content" class="p-4">
+          <p class="text-sm text-gray-600 mb-4">{{ lang.t('breathingDesc') }}</p>
+          <div class="text-center mb-6">
+            <div class="w-36 h-36 rounded-full flex items-center justify-center mx-auto mb-4 transition-all duration-1000"
+              [style.background]="breathColor"
+              [style.transform]="breathPhase === 'inhale' ? 'scale(1.35)' : breathPhase === 'exhale' ? 'scale(0.75)' : 'scale(1)'">
+              <span class="text-white font-bold text-sm text-center px-2">{{ breathLabel }}</span>
+            </div>
+            <p class="text-sm text-gray-500">{{ lang.t('step') }} {{ breathCount + (breathPhase !== 'idle' ? 1 : 0) }} / 4</p>
+          </div>
+          <ion-button expand="block" [color]="breathPhase === 'idle' ? 'secondary' : 'medium'" (click)="startBreathing()" [disabled]="breathPhase !== 'idle'">
+            {{ breathPhase === 'idle' ? lang.t('startExercise') : lang.t('exerciseRunning') }}
+          </ion-button>
+        </div>
+      </ion-accordion>
+
+      <!-- 5-4-3-2-1 Grounding — Interactive -->
+      <ion-accordion value="grounding54321">
+        <ion-item slot="header" color="light">
+          <ion-icon name="eye-outline" slot="start" color="primary"></ion-icon>
+          <ion-label>{{ lang.t('groundingEx') }}</ion-label>
+        </ion-item>
+        <div slot="content" class="p-4">
+
+          <!-- Not started -->
+          <div *ngIf="!groundingActive && !groundingDone">
+            <p class="text-sm text-gray-500 mb-4">{{ lang.t('groundingDesc') }}</p>
+            <div class="space-y-2 mb-4">
+              <div *ngFor="let s of groundingSteps; let i = index"
+                class="p-2 rounded-xl flex items-center gap-3"
+                [style.background]="s.color">
+                <span class="text-xl">{{ s.icon }}</span>
+                <div>
+                  <p class="text-xs font-bold text-gray-700">{{ s.count }} — {{ lang.t(s.keyTitle) }}</p>
+                  <p class="text-xs text-gray-500">{{ lang.t(s.keySub) }}</p>
+                </div>
+              </div>
+            </div>
+            <ion-button expand="block" color="primary" (click)="startGrounding()">
+              <ion-icon name="play-outline" slot="start"></ion-icon>
+              {{ lang.t('startGrounding') }}
+            </ion-button>
+          </div>
+
+          <!-- Active step -->
+          <div *ngIf="groundingActive && !groundingDone && currentGroundingStep">
+            <div class="flex gap-1 mb-5">
+              <div *ngFor="let s of groundingSteps; let i = index"
+                class="flex-1 h-1.5 rounded-full"
+                [style.background]="i < groundingStep ? '#4F7CAC' : '#E5E7EB'">
+              </div>
+            </div>
+            <div class="ocd-card text-center mb-5 py-6" [style.background]="currentGroundingStep.color">
+              <div class="text-5xl mb-3">{{ currentGroundingStep.icon }}</div>
+              <div class="text-4xl font-bold text-gray-400 mb-2">{{ currentGroundingStep.count }}</div>
+              <p class="text-lg font-bold text-gray-800 mb-1">{{ lang.t(currentGroundingStep.keyTitle) }}</p>
+              <p class="text-sm text-gray-500">{{ lang.t(currentGroundingStep.keySub) }}</p>
+            </div>
+            <p class="text-center text-xs text-gray-400 mb-4">{{ lang.t('step') }} {{ groundingStep }} {{ lang.t('of') }} 5</p>
+            <div class="flex gap-3">
+              <ion-button fill="outline" color="medium" (click)="prevGroundingStep()" [disabled]="groundingStep === 1" class="flex-1">
+                {{ lang.t('prevStep') }}
+              </ion-button>
+              <ion-button color="primary" (click)="nextGroundingStep()" class="flex-1">
+                {{ groundingStep === 5 ? lang.t('save') : lang.t('nextStep') }}
+              </ion-button>
+            </div>
+          </div>
+
+          <!-- Done -->
+          <div *ngIf="groundingDone" class="text-center">
+            <div class="ocd-card mb-4 py-6" style="background: #F0FDF4">
+              <ion-icon name="checkmark-circle" style="font-size: 56px; color: #6BAE8E"></ion-icon>
+              <p class="text-lg font-bold text-gray-800 mt-3">{{ lang.t('exerciseDone') }}</p>
+            </div>
+            <ion-button expand="block" fill="outline" color="primary" (click)="resetGrounding()">
+              <ion-icon name="refresh-outline" slot="start"></ion-icon>
+              {{ lang.t('resetEx') }}
+            </ion-button>
+          </div>
+
+        </div>
+      </ion-accordion>
+
+      <!-- Urge Surfing -->
+      <ion-accordion value="urge">
+        <ion-item slot="header" color="light">
+          <ion-icon name="water-outline" slot="start" color="primary"></ion-icon>
+          <ion-label>{{ lang.t('urgeSurfing') }}</ion-label>
+        </ion-item>
+        <div slot="content" class="p-4 text-sm text-gray-700">
+          <p class="mb-3 text-gray-500">ACT — Hayes, Strosahl &amp; Wilson 1999</p>
+          <div class="space-y-3">
+            <div class="p-3 rounded-xl" style="background: #EFF6FF">
+              <p class="font-semibold mb-1">1 — {{ lang.t('urgeStep1Title') }}</p>
+              <p class="text-xs text-gray-500">{{ lang.t('urgeStep1Sub') }}</p>
+            </div>
+            <div class="p-3 rounded-xl" style="background: #F0FDF4">
+              <p class="font-semibold mb-1">2 — {{ lang.t('urgeStep2Title') }}</p>
+              <p class="text-xs text-gray-500">{{ lang.t('urgeStep2Sub') }}</p>
+            </div>
+            <div class="p-3 rounded-xl" style="background: #FFF7ED">
+              <p class="font-semibold mb-1">3 — {{ lang.t('urgeStep3Title') }}</p>
+              <p class="text-xs text-gray-500">{{ lang.t('urgeStep3Sub') }}</p>
+            </div>
+            <div class="p-3 rounded-xl" style="background: #F0FDF4">
+              <p class="font-semibold mb-1">4 — {{ lang.t('urgeStep4Title') }}</p>
+              <p class="text-xs text-gray-500">{{ lang.t('urgeStep4Sub') }}</p>
+            </div>
+          </div>
+        </div>
+      </ion-accordion>
+
+    </ion-accordion-group>
+  </div>
+</ion-content>
